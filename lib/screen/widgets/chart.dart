@@ -5,17 +5,30 @@ import 'package:flutter/material.dart';
 class StackedAreaCustomColorLineChart extends StatelessWidget {
   final List<charts.Series> seriesList;
   final bool animate;
+  final String title;
 
-  StackedAreaCustomColorLineChart(this.seriesList, {this.animate});
+  StackedAreaCustomColorLineChart(this.seriesList, {this.animate, this.title});
 
   factory StackedAreaCustomColorLineChart.drawChart(
-      List<Record> cases, List<Record> deaths, List<Record> recovered) {
+      List<Record> cases, List<Record> deaths, List<Record> recovered, String title) {
     return new StackedAreaCustomColorLineChart(
-      _drawChart(cases, deaths, recovered),
+      _drawChart(cases.sublist(1), deaths.sublist(1), recovered.sublist(1)),
       animate: true,
+      title: title,
     );
   }
 
+  factory StackedAreaCustomColorLineChart.drawChartPerDay(
+      List<Record> cases, List<Record> deaths, List<Record> recovered, String title) {
+    List<Record> casesPerDay = _totalPerDay(cases);
+    List<Record> deathsPerDay = _totalPerDay(deaths);
+    List<Record> recoveredPerDay = _totalPerDay(recovered);
+    return new StackedAreaCustomColorLineChart(
+      _drawChart(casesPerDay, deathsPerDay, recoveredPerDay),
+      animate: true,
+      title: title,
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return new charts.TimeSeriesChart(seriesList,
@@ -33,7 +46,16 @@ class StackedAreaCustomColorLineChart extends StatelessWidget {
             )
         ),
         dateTimeFactory: const charts.LocalDateTimeFactory(),
-        behaviors: [
+        behaviors: [new charts.ChartTitle(this.title,
+            behaviorPosition: charts.BehaviorPosition.top,
+            titleStyleSpec: charts.TextStyleSpec(
+                color: charts.Color.white,
+                fontFamily: 'Roboto',
+                fontSize: 18
+            ),
+            titleOutsideJustification:
+            charts.OutsideJustification.middleDrawArea
+        ),
           new charts.SeriesLegend(
             position: charts.BehaviorPosition.bottom,
             outsideJustification: charts.OutsideJustification.middleDrawArea,
@@ -78,5 +100,16 @@ class StackedAreaCustomColorLineChart extends StatelessWidget {
         data: recovered,
       )
     ];
+  }
+
+  static List<Record> _totalPerDay(List<Record> records){
+    List<Record> recordsPerDay = [];
+    for(int i = 1; i<records.length; i++){
+        Record record = records.elementAt(i);
+        Record prevRecord = records.elementAt(i - 1);
+        int cases = record.cases - prevRecord.cases;
+        recordsPerDay.add(Record(record.date, cases));
+    }
+    return recordsPerDay;
   }
 }

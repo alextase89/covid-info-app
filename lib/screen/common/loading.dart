@@ -69,7 +69,7 @@ class _LoadingListPageState extends State<LoadingListPage> {
                       ],
                     ),
                   ),
-                  itemCount: 11,
+                  itemCount: 16,
                 ),
               ),
             ),

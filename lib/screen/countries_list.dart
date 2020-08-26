@@ -1,34 +1,41 @@
 import 'package:covid/model/classes.dart';
 import 'package:covid/screen/common/loading.dart';
-import 'package:covid/screen/country_details.dart';
+import 'package:covid/screen/information_details.dart';
 import 'package:covid/utils/constants.dart';
+import 'package:covid/utils/sprintf.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:covid/utils/http.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CountryList extends StatefulWidget {
-  CountryList();
+  final List<String> countryCodes;
+  final bool isFav;
+
+  CountryList({this.countryCodes, this.isFav});
 
   @override
-  _CountryListSate createState() => _CountryListSate();
+  _CountryListSate createState() => _CountryListSate(this.countryCodes, this.isFav);
 }
 
 class _CountryListSate extends State<CountryList> {
   var _loadingInProgress = false;
+  final List<String> countryCodes;
+  final bool isFav;
   List<CountryInfo> _suggestions = [];
   List<CountryInfo> _newDataList = [];
   TextEditingController _textController = TextEditingController();
   var _isSearchVisible = false;
 
-  _CountryListSate();
+  _CountryListSate(this.countryCodes, this.isFav);
 
   @override
   void initState() {
     super.initState();
-    _updateCountries();
     _loadingInProgress = true;
+    _updateCountries();
   }
 
   @override
@@ -37,7 +44,28 @@ class _CountryListSate extends State<CountryList> {
       appBar: AppBar(
         title: Visibility (
             visible: !_isSearchVisible,
-            child: Text('World Countries', style: TextStyle(fontSize: 25), textAlign: TextAlign.center),
+            child: Row(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.0),
+                ),
+                Container(
+                    margin: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: Icon(FontAwesomeIcons.globeAmericas)
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.0),
+                ),
+                Container(
+                  child: Text(
+                      !this.isFav
+                      ? 'World Countries'
+                      : "Favourite Countries",
+                      style: TextStyle(fontSize: 23), textAlign: TextAlign.center
+                  )
+                )
+              ],
+            ),
             replacement: Padding(
               padding: const EdgeInsets.all(12.0),
               child: TextField(
@@ -147,21 +175,28 @@ class _CountryListSate extends State<CountryList> {
     return Navigator.of(context).push(
         MaterialPageRoute<void>(
             builder: (BuildContext context) {
-              return new CountryDetails(c);
+              return InformationDetails(isWorldWide: false, countryInfo: c);
             }
         ),
     );
   }
 
   void _updateCountries() async {
-    Response response = await restClient.get(COUNTRY_SERVICE_URL);
-    if (response.statusCode == 200) {
-      _suggestions = (response.data as List)
-          .map((json) => CountryInfo.fromJson(json))
-          .where((country) => country.code != null && country.name != null)
-          .toList();
-    }
-    setState(() {
+      if(!this.isFav || (isFav && this.countryCodes.isNotEmpty)) {
+        Response response = await restClient.get(_countriesServiceUrl());
+        if (response.statusCode == 200) {
+          if (isFav && this.countryCodes.length == 1) {
+            _suggestions = [CountryInfo.fromJson(response.data)];
+          } else {
+            _suggestions = (response.data as List)
+                .map((json) => CountryInfo.fromJson(json))
+                .where((country) =>
+            country.code != null && country.name != null)
+                .toList();
+          }
+        }
+      }
+      setState(() {
       _newDataList.addAll(_suggestions);
       _loadingInProgress = false;
     });
@@ -183,4 +218,13 @@ class _CountryListSate extends State<CountryList> {
     _newDataList.addAll(_suggestions);
     _textController.clear();
   }
+  
+  String _countriesServiceUrl(){
+    if(this.countryCodes != null && this.countryCodes.isNotEmpty){
+        String codes = this.countryCodes.join(",");
+        return sprintf(COUNTRY_MULTIPLE_SERVICE_URL, [codes]);
+    }
+    return COUNTRY_SERVICE_URL;
+  }
+  
 }

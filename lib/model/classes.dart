@@ -1,3 +1,4 @@
+import 'package:charts_flutter/flutter.dart';
 import 'package:covid/utils/util.dart';
 
 class InformationDetailsResponse {
@@ -10,6 +11,11 @@ class InformationDetailsResponse {
   int active;
   int critical;
   int tests;
+  int population;
+  double casesPerOneMillion;
+  double deathsPerOneMillion;
+  double testsPerOneMillion;
+  double criticalPerOneMillion;
 
   InformationDetailsResponse({
     this.cases,
@@ -20,7 +26,12 @@ class InformationDetailsResponse {
     this.todayRecovered,
     this.active,
     this.critical,
-    this.tests
+    this.tests,
+    this.population,
+    this.casesPerOneMillion,
+    this.deathsPerOneMillion,
+    this.testsPerOneMillion,
+    this.criticalPerOneMillion
   });
 
   factory InformationDetailsResponse.fromJson(Map<String, dynamic> json) =>
@@ -33,7 +44,13 @@ class InformationDetailsResponse {
           todayRecovered: json["todayRecovered"],
           active: json["active"],
           critical: json["critical"],
-          tests: json["tests"]);
+          tests: json["tests"],
+          population: json["population"],
+          casesPerOneMillion: double.tryParse(json["casesPerOneMillion"].toString()),
+          deathsPerOneMillion: double.tryParse(json["deathsPerOneMillion"].toString()),
+          testsPerOneMillion: double.tryParse(json["testsPerOneMillion"].toString()),
+          criticalPerOneMillion: double.tryParse(json["criticalPerOneMillion"].toString())
+      );
 }
 
 class CountryInfo {
@@ -54,4 +71,12 @@ class Record {
   int cases;
 
   Record(this.date, this.cases);
+}
+
+class PointValue{
+  Color bgColor;
+  String text;
+  int index;
+
+  PointValue({this.text, this.bgColor, this.index});
 }

@@ -1,8 +1,10 @@
 import 'package:covid/model/classes.dart';
+import 'package:covid/screen/common/extra_info_card.dart';
 import 'package:covid/screen/common/info_card.dart';
 import 'package:covid/screen/common/loading.dart';
 import 'package:covid/screen/countries_list.dart';
-import 'package:covid/screen/widgets/chart.dart';
+import 'package:covid/screen/widgets/chart_historical.dart';
+import 'package:covid/screen/widgets/chart_historical_days.dart';
 import 'package:covid/utils/constants.dart';
 import 'package:covid/utils/http.dart';
 import 'package:covid/utils/sprintf.dart';
@@ -74,7 +76,7 @@ class _InformationDetailsState extends State<InformationDetails> {
             ],
           ),
         ),
-          actions: !this.isWorldWide
+          actions: !this.isWorldWide && !this._loadingInProgress
               ? [
                   IconButton(
                     icon: Icon(
@@ -203,17 +205,24 @@ class _InformationDetailsState extends State<InformationDetails> {
                     ),
                   ],
                 ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: ExtraInfoCard(informationDetailsResponse: this.infoDetails),
+                    ),
+                  ],
+                ),
                 Container(
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
                     height: MediaQuery.of(context).size.height / 2,
-                    child: StackedAreaCustomColorLineChart.drawChartPerDay(
+                    child: HistoricalPerDayChart.drawChartPerDay(
                         this.cases, this.deaths, this.recovered, "Historical Totals Daily")
                 ),
 
                 Container(
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
                     height: MediaQuery.of(context).size.height / 2,
-                    child: StackedAreaCustomColorLineChart.drawChart(
+                    child: HistoricalTotalsChart.drawChart(
                         this.cases, this.deaths, this.recovered, "Historical Totals")
                 ),
               ]),
@@ -245,10 +254,12 @@ class _InformationDetailsState extends State<InformationDetails> {
         this.cases != null &&
         this.deaths != null &&
         this.recovered != null) {
-      setState(() {
-        this._loadingInProgress = false;
-        this._favorites = (_prefs.getStringList("country_fav") ?? []);
-      });
+      if(mounted) {
+        setState(() {
+          this._loadingInProgress = false;
+          this._favorites = (_prefs.getStringList("country_fav") ?? []);
+        });
+      }
     }
   }
 

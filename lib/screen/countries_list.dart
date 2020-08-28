@@ -46,9 +46,6 @@ class _CountryListSate extends State<CountryList> {
             visible: !_isSearchVisible,
             child: Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.0),
-                ),
                 Container(
                     margin: const EdgeInsets.symmetric(vertical: 5.0),
                     child: Icon(FontAwesomeIcons.globeAmericas)
@@ -61,7 +58,7 @@ class _CountryListSate extends State<CountryList> {
                       !this.isFav
                       ? 'World Countries'
                       : "Favourite Countries",
-                      style: TextStyle(fontSize: 23), textAlign: TextAlign.center
+                      style: TextStyle(fontSize: 20), textAlign: TextAlign.center
                   )
                 )
               ],
@@ -172,12 +169,14 @@ class _CountryListSate extends State<CountryList> {
   }
 
   _seeCountryDetails(CountryInfo c){
-    return Navigator.of(context).push(
-        MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return InformationDetails(isWorldWide: false, countryInfo: c);
-            }
-        ),
+    return Navigator.push(
+          context,
+        MaterialPageRoute(builder: (context) => InformationDetails(isWorldWide: false, countryInfo: c))
+//        MaterialPageRoute<void>(
+//            builder: (BuildContext context) {
+//              return InformationDetails(isWorldWide: false, countryInfo: c);
+//            }
+//        ),
     );
   }
 

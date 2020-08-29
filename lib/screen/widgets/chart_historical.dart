@@ -1,12 +1,12 @@
 
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:charts_flutter/src/text_element.dart';
 import 'package:charts_flutter/src/text_style.dart' as style;
 import 'package:covid/model/classes.dart';
 import 'package:intl/intl.dart';
+import '../../i18n/main.i18n.dart';
 
 class HistoricalTotalsChart extends StatelessWidget {
   final List<charts.Series> seriesList;
@@ -98,7 +98,7 @@ class HistoricalTotalsChart extends StatelessWidget {
 
     return [
       new charts.Series<Record, DateTime>(
-        id: 'Cases',
+        id: "Cases".i18n,
         // colorFn specifies that the line will be blue.
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
         domainFn: (Record r, _) => r.date,
@@ -106,7 +106,7 @@ class HistoricalTotalsChart extends StatelessWidget {
         data: cases,
       ),
       new charts.Series<Record, DateTime>(
-        id: 'Deaths',
+        id: 'Deaths'.i18n,
         // colorFn specifies that the line will be blue.
         colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
         domainFn: (Record r, _) => r.date,
@@ -114,7 +114,7 @@ class HistoricalTotalsChart extends StatelessWidget {
         data: deaths,
       ),
       new charts.Series<Record, DateTime>(
-        id: 'Recovered',
+        id: 'Recovered'.i18n,
         // colorFn specifies that the line will be blue.
         colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
         domainFn: (Record r, _) => r.date,

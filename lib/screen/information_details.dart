@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:covid/model/classes.dart';
 import 'package:covid/screen/common/extra_info_card.dart';
 import 'package:covid/screen/common/info_card.dart';
 import 'package:covid/screen/common/loading.dart';
+import 'package:covid/screen/common/not_found.dart';
 import 'package:covid/screen/countries_list.dart';
 import 'package:covid/screen/widgets/chart_historical.dart';
 import 'package:covid/screen/widgets/chart_historical_days.dart';
@@ -23,7 +26,8 @@ class InformationDetails extends StatefulWidget {
   InformationDetails({this.isWorldWide, this.countryInfo});
 
   @override
-  State<InformationDetails> createState() => _InformationDetailsState(this.isWorldWide, this.countryInfo);
+  State<InformationDetails> createState() =>
+      _InformationDetailsState(this.isWorldWide, this.countryInfo);
 }
 
 class _InformationDetailsState extends State<InformationDetails> {
@@ -36,6 +40,8 @@ class _InformationDetailsState extends State<InformationDetails> {
   List<Record> deaths = [];
   List<Record> recovered = [];
   List<String> _favorites = [];
+  bool isAvailableData = true;
+  bool isHistoricalData = true;
 
   _InformationDetailsState(this.isWorldWide, this.countryInfo);
 
@@ -91,7 +97,7 @@ class _InformationDetailsState extends State<InformationDetails> {
                 ]
               : null),
       body: _loadingInProgress ? loadingWidget : _buildDetailsView(context),
-      floatingActionButton: this.isWorldWide
+      floatingActionButton: this.isWorldWide && this.isAvailableData
           ? SpeedDial(
               // both default to 16
               marginRight: 18,
@@ -142,116 +148,136 @@ class _InformationDetailsState extends State<InformationDetails> {
   }
 
   Widget _buildDetailsView(BuildContext context) {
-    return SingleChildScrollView(
-      child: AnimationLimiter(
-        child: Column(
-          children: AnimationConfiguration.toStaggeredList(
-              duration: const Duration(milliseconds: 375),
-              childAnimationBuilder: (widget) => SlideAnimation(
-                    horizontalOffset: 50.0,
-                    child: FadeInAnimation(
-                      child: widget,
-                    ),
-                  ),
-              children: [
-                FlipCard(
-                    front: new InfoCard(
-                        paddingTopBottom: 20,
-                        title: "Total cases".i18n,
-                        value: infoDetails.cases,
-                        valueColor: Colors.blue,
-                        valueFontSize: 60),
-                    back: new InfoCard(
-                        paddingTopBottom: 20,
-                        title: "Today cases".i18n,
-                        value: infoDetails.todayCases,
-                        valueColor: Colors.blue,
-                        valueFontSize: 60)),
-                Row(
-                  children: [
-                    Flexible(
-                      child: FlipCard(
+    return !this.isAvailableData
+        ? NotFountScreen(text: 'No data or connection available at this time.'.i18n, isMainScreen: true)
+        : SingleChildScrollView(
+            child: AnimationLimiter(
+              child: Column(
+                children: AnimationConfiguration.toStaggeredList(
+                    duration: const Duration(milliseconds: 375),
+                    childAnimationBuilder: (widget) => SlideAnimation(
+                          horizontalOffset: 50.0,
+                          child: FadeInAnimation(
+                            child: widget,
+                          ),
+                        ),
+                    children: [
+                      FlipCard(
                           front: new InfoCard(
-                              paddingTopBottom: 15,
-                              title: "Recovered".i18n,
-                              value: infoDetails.recovered,
-                              valueColor: Colors.green,
-                              valueFontSize: 33),
+                              paddingTopBottom: 20,
+                              title: "Total cases".i18n,
+                              value: infoDetails.cases,
+                              valueColor: Colors.blue,
+                              valueFontSize: 60),
                           back: new InfoCard(
-                              paddingTopBottom: 15,
-                              title: "Today recovered".i18n,
-                              value: infoDetails.todayRecovered,
-                              valueColor: Colors.green,
-                              valueFontSize: 33)),
-                    ),
-                    Flexible(
-                      child: FlipCard(
-                          front: new InfoCard(
-                              paddingTopBottom: 15,
-                              title: "Deaths".i18n,
-                              value: infoDetails.deaths,
-                              valueColor: Colors.redAccent,
-                              valueFontSize: 33),
-                          back: new InfoCard(
-                              paddingTopBottom: 15,
-                              title: "Today deaths".i18n,
-                              value: infoDetails.todayDeaths,
-                              valueColor: Colors.redAccent,
-                              valueFontSize: 33)),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Flexible(
-                      child: ExtraInfoCard(
-                          informationDetailsResponse: this.infoDetails),
-                    ),
-                  ],
-                ),
-                Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8.0),
-                    height: MediaQuery.of(context).size.height / 2,
-                    child: HistoricalPerDayChart.drawChartPerDay(
-                        this.cases,
-                        this.deaths,
-                        this.recovered,
-                        "Historical totals daily".i18n)),
-                Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8.0),
-                    height: MediaQuery.of(context).size.height / 2,
-                    child: HistoricalTotalsChart.drawChart(this.cases,
-                        this.deaths, this.recovered, "Historical totals".i18n)),
-              ]),
-        ),
-      ),
-    );
+                              paddingTopBottom: 20,
+                              title: "Today cases".i18n,
+                              value: infoDetails.todayCases,
+                              valueColor: Colors.blue,
+                              valueFontSize: 60)),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: FlipCard(
+                                front: new InfoCard(
+                                    paddingTopBottom: 15,
+                                    title: "Recovered".i18n,
+                                    value: infoDetails.recovered,
+                                    valueColor: Colors.green,
+                                    valueFontSize: 33),
+                                back: new InfoCard(
+                                    paddingTopBottom: 15,
+                                    title: "Today recovered".i18n,
+                                    value: infoDetails.todayRecovered,
+                                    valueColor: Colors.green,
+                                    valueFontSize: 33)),
+                          ),
+                          Flexible(
+                            child: FlipCard(
+                                front: new InfoCard(
+                                    paddingTopBottom: 15,
+                                    title: "Deaths".i18n,
+                                    value: infoDetails.deaths,
+                                    valueColor: Colors.redAccent,
+                                    valueFontSize: 33),
+                                back: new InfoCard(
+                                    paddingTopBottom: 15,
+                                    title: "Today deaths".i18n,
+                                    value: infoDetails.todayDeaths,
+                                    valueColor: Colors.redAccent,
+                                    valueFontSize: 33)),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: ExtraInfoCard(
+                                informationDetailsResponse: this.infoDetails),
+                          ),
+                        ],
+                      ),
+                      !this.isHistoricalData
+                          ? NotFountScreen(text: 'No data available.'.i18n, isMainScreen: false)
+                          : Container(
+                              margin: const EdgeInsets.symmetric(vertical: 8.0),
+                              height: MediaQuery.of(context).size.height / 2,
+                              child: HistoricalPerDayChart.drawChartPerDay(
+                                  this.cases,
+                                  this.deaths,
+                                  this.recovered,
+                                  "Historical totals daily".i18n)),
+                      this.isHistoricalData
+                          ? Container(
+                              margin: const EdgeInsets.symmetric(vertical: 8.0),
+                              height: MediaQuery.of(context).size.height / 2,
+                              child: HistoricalTotalsChart.drawChart(
+                                  this.cases,
+                                  this.deaths,
+                                  this.recovered,
+                                  "Historical totals".i18n))
+                          : Container()
+                    ]),
+              ),
+            ),
+          );
   }
 
   void _loadDataAndPreferences() async {
     _prefs = await SharedPreferences.getInstance();
 
-    String detailsUrl = this.isWorldWide
-        ? WW_DETAILS_URL
-        : sprintf(COUNTRY_DETAILS_URL, [this.countryInfo.code]);
-    await restClient.get(detailsUrl).then((value) =>
-        {this.infoDetails = InformationDetailsResponse.fromJson(value.data)});
+    try {
+      String detailsUrl = this.isWorldWide
+          ? WW_DETAILS_URL
+          : sprintf(COUNTRY_DETAILS_URL, [this.countryInfo.code]);
+      await restClient.get(detailsUrl).then((value) =>
+          {this.infoDetails = InformationDetailsResponse.fromJson(value.data)});
 
-    String historicalUrl = this.isWorldWide
-        ? WW_HISTORICAL_URL
-        : sprintf(COUNTRY_HISTORICAL_URL, [this.countryInfo.code]);
-    await restClient.get(historicalUrl).then((value) => {
-          this.cases = _historicalRecords(value.data, "cases"),
-          this.deaths = _historicalRecords(value.data, "deaths"),
-          this.recovered = _historicalRecords(value.data, "recovered")
-        });
-
+      try {
+        String historicalUrl = this.isWorldWide
+            ? WW_HISTORICAL_URL
+            : sprintf(COUNTRY_HISTORICAL_URL, [this.countryInfo.code]);
+        await restClient.get(historicalUrl).then((value) => {
+              this.cases = _historicalRecords(value.data, "cases"),
+              this.deaths = _historicalRecords(value.data, "deaths"),
+              this.recovered = _historicalRecords(value.data, "recovered")
+            });
+      } on Exception catch (_) {
+        this.isHistoricalData = false;
+        this.cases = [];
+        this.deaths = [];
+        this.recovered = [];
+      }
+    } on Exception catch (_) {
+      this.infoDetails = new InformationDetailsResponse();
+      this.isAvailableData = false;
+    }
     if (this._prefs != null &&
         this.infoDetails != null &&
         this.cases != null &&
         this.deaths != null &&
         this.recovered != null) {
-      if(mounted) {
+      if (mounted) {
         setState(() {
           this._loadingInProgress = false;
           this._favorites = (_prefs.getStringList("country_fav") ?? []);
@@ -287,11 +313,15 @@ class _InformationDetailsState extends State<InformationDetails> {
     setState(() {
       if (_favorites.contains(countryInfo.code)) {
         _favorites.remove(countryInfo.code);
-        _showSnackBar(context, "%s was removed to favourites.".i18n.fill([countryInfo.name]),
+        _showSnackBar(
+            context,
+            "%s was removed to favourites.".i18n.fill([countryInfo.name]),
             Colors.red);
       } else {
         _favorites.add(countryInfo.code);
-        _showSnackBar(context, "%s was added to favourites.".i18n.fill([countryInfo.name]),
+        _showSnackBar(
+            context,
+            "%s was added to favourites.".i18n.fill([countryInfo.name]),
             Colors.blueGrey);
       }
       _prefs.setStringList("country_fav", _favorites);

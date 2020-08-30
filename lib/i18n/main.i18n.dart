@@ -5,132 +5,142 @@ extension Localization on String {
   static var _t = Translations("en_us") +
       {
         "en_us": "Loading World and Countries Information...",
-        "es_uy": "Cargando información global y paises...",
+        "es_ES": "Cargando información global y paises...",
       }
       +
       {
         "en_us": "WorldWide Details",
-        "es_uy": "Detalles Globales",
+        "es_ES": "Detalles Globales",
       }
       +
       {
         "en_us": "Favourites",
-        "es_uy": "Favoritos",
+        "es_ES": "Favoritos",
       }
       +
       {
         "en_us": "Countries",
-        "es_uy": "Paises",
+        "es_ES": "Paises",
       }
       +
       {
         "en_us": "Continents",
-        "es_uy": "Continentes",
+        "es_ES": "Continentes",
       }
       +
       {
         "en_us": "Total cases",
-        "es_uy": "Casos totales",
+        "es_ES": "Casos totales",
       }
       +
       {
         "en_us": "Cases",
-        "es_uy": "Casos",
+        "es_ES": "Casos",
       }
       +
       {
         "en_us": "Today cases",
-        "es_uy": "Casos hoy",
+        "es_ES": "Casos hoy",
       }
       +
       {
         "en_us": "Recovered",
-        "es_uy": "Recuperados",
+        "es_ES": "Recuperados",
       }
       +
       {
         "en_us": "Today recovered",
-        "es_uy": "Recuperados hoy",
+        "es_ES": "Recuperados hoy",
       }
       +
       {
         "en_us": "Deaths",
-        "es_uy": "Fallecidos",
+        "es_ES": "Fallecidos",
       }
       +
       {
         "en_us": "Today deaths",
-        "es_uy": "Fallecidos hoy",
+        "es_ES": "Fallecidos hoy",
       }
       +
       {
         "en_us": "Historical totals daily",
-        "es_uy": "Totales históricos diarios",
+        "es_ES": "Totales históricos diarios",
       }
       +
       {
         "en_us": "Historical totals",
-        "es_uy": "Totales históricos",
+        "es_ES": "Totales históricos",
       }
       +
       {
         "en_us": "%s was added to favourites.",
-        "es_uy": "%s fue agregado a favoritos.",
+        "es_ES": "%s fue agregado a favoritos.",
       }
       +
       {
         "en_us": "%s was removed to favourites.",
-        "es_uy": "%s fue eliminado de favoritos.",
+        "es_ES": "%s fue eliminado de favoritos.",
       }
       +
       {
         "en_us": "Population",
-        "es_uy": "Población",
+        "es_ES": "Población",
       }
       +
       {
         "en_us": "Cases/Million",
-        "es_uy": "Casos/Millón",
+        "es_ES": "Casos/Millón",
       }
       +
       {
         "en_us": "Active cases",
-        "es_uy": "Casos activos",
+        "es_ES": "Casos activos",
       }
       +
       {
         "en_us": "Deaths/Million",
-        "es_uy": "Facllecidos/Millón",
+        "es_ES": "Facllecidos/Millón",
       }
       +
       {
         "en_us": "Critical/Million",
-        "es_uy": "Críticos/Millón",
+        "es_ES": "Críticos/Millón",
       }
       +
       {
         "en_us": "Tests/Million",
-        "es_uy": "Pruebas/Millón",
+        "es_ES": "Pruebas/Millón",
       }
       +
       {
         "en_us": "Critical",
-        "es_uy": "Críticos",
+        "es_ES": "Críticos",
       }
       +
       {
         "en_us": "Tests",
-        "es_uy": "Pruebas",
+        "es_ES": "Pruebas",
       }
       +
       {
         "en_us": "Remove",
-        "es_uy": "Eliminar",
+        "es_ES": "Eliminar",
       }
       +
       {
         "en_us": "Search...",
-        "es_uy": "Buscar...",
+        "es_ES": "Buscar...",
+      }
+      +
+      {
+        "en_us": "No data or connection available at this time.",
+        "es_ES": "No hay datos o conexión disponibles en este momento",
+      }
+      +
+      {
+        "en_us": "No data available.",
+        "es_ES": "No hay datos disponibles.",
       };
 
   String get i18n => localize(this, _t);

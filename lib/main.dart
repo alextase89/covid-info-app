@@ -16,7 +16,7 @@ void main() {
     ],
     supportedLocales: [
       const Locale('en', "US"),
-      const Locale('es', "UY"),
+      const Locale('es', "ES"),
     ],
     home: new I18n(
       child: new MyApp()
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       seconds: 3,
       navigateAfterSeconds: InformationDetails(isWorldWide: true),
       title: Text(
-          "Covid Info App",
+          "Covid Live Updates",
           style: TextStyle(
               color: Colors.redAccent,
               fontSize: 30,

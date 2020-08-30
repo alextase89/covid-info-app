@@ -159,7 +159,7 @@ class CustomCircleSymbolRenderer extends charts.CircleSymbolRenderer {
   }
 
   double _alignmentLeft(Rectangle bounds, PointValue pointValue){
-    double alignmentLeft = bounds.left - 10 - (pointValue.text.length * 9);
+    double alignmentLeft = bounds.left - (pointValue.text.length * 9);
     if(pointValue.index < 15){
       alignmentLeft = bounds.left + 5;
     }

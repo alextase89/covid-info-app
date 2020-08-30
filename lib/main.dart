@@ -34,14 +34,14 @@ class MyApp extends StatelessWidget {
       seconds: 3,
       navigateAfterSeconds: InformationDetails(isWorldWide: true),
       title: Text(
-          "COVID-19",
+          "Covid Info App",
           style: TextStyle(
               color: Colors.redAccent,
               fontSize: 30,
               fontWeight: FontWeight.bold
           ),
       ),
-      image: Image.asset("assets/images/covid_splash.png"),
+      image: Image.asset("assets/images/image.png"),
       backgroundColor: Colors.black38,
       photoSize: 100,
       loaderColor: Colors.white60,
